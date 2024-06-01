@@ -1,88 +1,76 @@
 <script setup>
-import { ref, onMounted, watch, nextTick, computed } from 'vue'
-import html2canvas from 'html2canvas';
+import { ref, onMounted, watch, nextTick, computed } from "vue";
+import html2canvas from "html2canvas";
+import { ElMessage } from 'element-plus'
 
 defineProps({
   msg: String,
-})
+});
 
 // 颜色
-const bgColor = ref('#157df1')
+const bgColor = ref("#157df1");
 const predefineColors = ref([
-  '#ff4500',
-  '#ff8c00',
-  '#ffd700',
-  '#90ee90',
-  '#00ced1',
-  '#1e90ff',
-  '#c71585',
-  'rgba(255, 69, 0, 1)',
-  'rgb(255, 120, 0)',
-  'hsv(51, 100, 98)',
-  'hsva(120, 40, 94, 0.5)',
-  'hsl(181, 100%, 37%)',
-  'hsla(209, 100%, 56%, 0.73)',
-  '#c7158577',
-])
+  "#ff4500",
+  "#ff8c00",
+  "#ffd700",
+  "#90ee90",
+  "#00ced1",
+  "#1e90ff",
+  "#c71585",
+  "rgba(255, 69, 0, 1)",
+  "rgb(255, 120, 0)",
+  "hsv(51, 100, 98)",
+  "hsva(120, 40, 94, 0.5)",
+  "hsl(181, 100%, 37%)",
+  "hsla(209, 100%, 56%, 0.73)",
+  "#c7158577",
+]);
 
-const newColor = ref('#ffffff')
-onMounted(() => {
-  const svgPaths = document.querySelectorAll('.preview svg path');
-  svgPaths.forEach(path => {
-    path.style.fill = newColor.value; // 将颜色改为绿色
-  });
-
-  const svgIcon = document.querySelectorAll('.iconContainer svg');
-  svgIcon.forEach(icon => {
-    icon.style.width = '30px';
-    icon.style.height = '30px';
-  })
-})
-
+const newColor = ref("#ffffff");
 // 背景图
 const bgImgMap = ref({
   pure: {
-    url: '',
-    name: '纯色',
+    url: "",
+    name: "纯色",
   },
   rhombus: {
-    url: new URL('@/assets/images/m-1.png', import.meta.url).href,
-    name: '菱形',
+    url: new URL("@/assets/images/m-1.png", import.meta.url).href,
+    name: "菱形",
   },
   irregularit: {
-    url: new URL('@/assets/images/m-2.png', import.meta.url).href,
-    name: '不规则',
+    url: new URL("@/assets/images/m-2.png", import.meta.url).href,
+    name: "不规则",
   },
   concentric: {
-    url: new URL('@/assets/images/m-3.png', import.meta.url).href,
-    name: '同心圆',
+    url: new URL("@/assets/images/m-3.png", import.meta.url).href,
+    name: "同心圆",
   },
   bias: {
-    url: new URL('@/assets/images/m-4.png', import.meta.url).href,
-    name: '斜线',
+    url: new URL("@/assets/images/m-4.png", import.meta.url).href,
+    name: "斜线",
   },
   hexagon: {
-    url: new URL('@/assets/images/m-5.png', import.meta.url).href,
-    name: '六边形',
+    url: new URL("@/assets/images/m-5.png", import.meta.url).href,
+    name: "六边形",
   },
   arrows: {
-    url: new URL('@/assets/images/m-6.png', import.meta.url).href,
-    name: '箭头',
+    url: new URL("@/assets/images/m-6.png", import.meta.url).href,
+    name: "箭头",
   },
   fiveOinted: {
-    url: new URL('@/assets/images/m-7.png', import.meta.url).href,
-    name: '五角星',
+    url: new URL("@/assets/images/m-7.png", import.meta.url).href,
+    name: "五角星",
   },
   spin: {
-    url: new URL('@/assets/images/m-8.png', import.meta.url).href,
-    name: '旋转',
+    url: new URL("@/assets/images/m-8.png", import.meta.url).href,
+    name: "旋转",
   },
   diagonal: {
-    url: new URL('@/assets/images/m-9.png', import.meta.url).href,
-    name: '对角线',
+    url: new URL("@/assets/images/m-9.png", import.meta.url).href,
+    name: "对角线",
   },
-})
-const selectBgImg = ref('pure')
+});
+const selectBgImg = ref("pure");
 
 // Icon
 const iconList = ref([
@@ -129,89 +117,150 @@ const iconList = ref([
   '<svg class="icon" width="64px" height="64.00px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M170.860606 164.63903a10.550303 10.550303 0 0 0-10.519273 9.797818l-36.15806 506.228364a10.550303 10.550303 0 0 0 10.519272 11.29503h753.08994c6.120727 0 10.961455-5.197576 10.519273-11.29503l-36.158061-506.228364a10.534788 10.534788 0 0 0-10.519273-9.797818H170.860606z m-73.634909 5.290667a73.821091 73.821091 0 0 1 73.634909-68.569212h680.773818a73.828848 73.828848 0 0 1 73.642667 68.569212l36.158061 506.220606c3.048727 42.744242-30.797576 79.088485-73.642667 79.088485h-344.901818v105.464242h73.821091a31.635394 31.635394 0 1 1 0 63.278546H384.690424a31.643152 31.643152 0 0 1 0-63.278546h94.921697V755.238788H134.702545c-42.845091 0-76.691394-36.352-73.642666-79.088485l36.165818-506.220606z"  /><path fill="#ffffff" d="M226.505697 597.030788a31.635394 31.635394 0 0 1 31.643151-31.635394h506.220607a31.643152 31.643152 0 1 1 0 63.278545H258.148848a31.635394 31.635394 0 0 1-31.643151-31.643151z"  /></svg>',
   '<svg class="icon" width="64px" height="64.00px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M937.076364 511.332848h-146.331152V412.470303c75.931152 0 137.425455-61.494303 137.425455-137.433212 0-4.344242-3.55297-7.912727-7.90497-7.912727h-59.322182c-4.352 0-7.912727 3.568485-7.912727 7.912727a62.277818 62.277818 0 0 1-62.285576 62.293333H237.056a62.285576 62.285576 0 0 1-62.293333-62.293333c0-4.344242-3.55297-7.912727-7.90497-7.912727h-59.322182c-4.344242 0-7.912727 3.568485-7.912727 7.912727 0 75.931152 61.502061 137.433212 137.433212 137.433212v98.870303H90.724848c-4.344242 0-7.912727 3.568485-7.912727 7.912727v55.365819c0 4.352 3.568485 7.912727 7.912727 7.912727h146.331152v94.913939c0 6.43103 0.201697 12.854303 0.698182 19.083637-67.832242 28.966788-115.386182 96.302545-115.386182 174.708363 0 4.352 3.560727 7.912727 7.912727 7.912727h55.365818c4.344242 0 7.912727-3.560727 7.912728-7.912727a118.528 118.528 0 0 1 58.926545-102.531879 269.730909 269.730909 0 0 0 22.442667 48.446061 278.147879 278.147879 0 0 0 99.366788 99.366788 275.277576 275.277576 0 0 0 139.605333 37.771636c50.920727 0 98.676364-13.746424 139.706182-37.771636A278.155636 278.155636 0 0 0 775.416242 768.698182a118.652121 118.652121 0 0 1 58.833455 102.531879c0 4.352 3.55297 7.912727 7.90497 7.912727h55.365818c4.352 0 7.912727-3.560727 7.912727-7.912727 0-78.405818-47.553939-145.741576-115.386182-174.700606 0.395636-6.337939 0.698182-12.660364 0.698182-19.083637V582.516364h146.331152c4.344242 0 7.90497-3.560727 7.904969-7.912728v-55.365818c0-4.344242-3.560727-7.912727-7.904969-7.912727z m-221.478788 166.105213a200.455758 200.455758 0 0 1-27.485091 101.740606 202.038303 202.038303 0 0 1-72.471273 72.471272 199.175758 199.175758 0 0 1-64.170667 24.025213V483.653818c0-4.352-3.560727-7.912727-7.912727-7.912727h-59.322182c-4.344242 0-7.912727 3.560727-7.912727 7.912727v392.021334a199.168 199.168 0 0 1-64.155151-24.025213 202.038303 202.038303 0 0 1-72.479031-72.471272 200.455758 200.455758 0 0 1-27.485091-101.740606V412.470303h403.39394v264.975515z"  /><path fill="#ffffff" d="M308.247273 281.941333h55.373575c4.344242 0 7.912727-3.560727 7.912728-7.912727 0-27.973818 5.825939-52.596364 16.903757-72.665212a111.476364 111.476364 0 0 1 44.885334-44.893091c20.169697-10.969212 44.691394-16.903758 72.672969-16.903758h15.825455c27.973818 0 52.596364 5.833697 72.665212 16.911516a111.476364 111.476364 0 0 1 44.885333 44.885333c10.97697 20.169697 16.911515 44.683636 16.911516 72.665212 0 4.352 3.560727 7.912727 7.912727 7.912727h55.365818c4.344242 0 7.912727-3.560727 7.912727-7.912727 0-39.548121-8.704-75.830303-25.615515-106.876121a182.225455 182.225455 0 0 0-73.161697-73.161697c-31.045818-16.911515-67.335758-25.615515-106.883879-25.615515h-15.825454c-39.540364 0-75.830303 8.704-106.876121 25.615515a182.225455 182.225455 0 0 0-73.161697 73.153939c-16.911515 31.053576-25.607758 67.335758-25.607758 106.891637 0 4.344242 3.560727 7.912727 7.912727 7.912727z"  /></svg>',
   '<svg class="icon" width="64px" height="63.57px" viewBox="0 0 1031 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M196.436031 191.284763a63.761588 63.761588 0 0 0-63.761588 63.761588v573.85429a63.761588 63.761588 0 0 0 63.761588 63.761588h637.615877a63.761588 63.761588 0 0 0 63.761588-63.761588V255.046351a63.761588 63.761588 0 0 0-63.761588-63.761588H196.436031zM68.912855 255.046351c0-70.429313 57.093863-127.523176 127.523176-127.523175h637.615877c70.429313 0 127.523176 57.093863 127.523176 127.523175v573.85429c0 70.429313-57.093863 127.523176-127.523176 127.523176H196.436031c-70.429313 0-127.523176-57.093863-127.523176-127.523176V255.046351z"  /><path fill="#ffffff" d="M594.936183 510.100519a47.823145 47.823145 0 1 0 0-95.64629 47.823145 47.823145 0 0 0 0 95.64629zM754.351878 510.100519a47.823145 47.823145 0 1 0 0-95.638473 47.823145 47.823145 0 0 0 0 95.638473zM594.936183 669.484947a47.823145 47.823145 0 1 0 0-95.638474 47.823145 47.823145 0 0 0 0 95.638474zM754.351878 669.484947a47.823145 47.823145 0 1 0 0-95.638474 47.823145 47.823145 0 0 0 0 95.638474zM276.143878 669.484947a47.823145 47.823145 0 1 0 0-95.638474 47.823145 47.823145 0 0 0 0 95.638474zM435.536122 669.484947a47.823145 47.823145 0 1 0 0-95.638474 47.823145 47.823145 0 0 0 0 95.638474zM276.143878 828.892824a47.823145 47.823145 0 1 0 0-95.638473 47.823145 47.823145 0 0 0 0 95.638473zM435.536122 828.892824a47.823145 47.823145 0 1 0 0-95.638473 47.823145 47.823145 0 0 0 0 95.638473zM594.936183 828.892824a47.823145 47.823145 0 1 0 0-95.638473 47.823145 47.823145 0 0 0 0 95.638473z"  /><path fill="#ffffff" d="M260.205435 63.769405a31.876885 31.876885 0 0 1 31.876886 31.884702v63.761588a31.876885 31.876885 0 1 1-63.761588 0v-63.761588a31.876885 31.876885 0 0 1 31.884702-31.884702zM770.282504 63.769405a31.884702 31.884702 0 0 1 31.884702 31.884702v63.761588a31.884702 31.884702 0 0 1-63.761588 0v-63.761588a31.876885 31.876885 0 0 1 31.876886-31.884702zM100.797557 286.91542h828.892825v63.761588H100.797557v-63.761588z"  /></svg>',
-  '<svg class="icon" width="64px" height="64.00px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M726.461557 205.714565a31.876885 31.876885 0 0 1 31.876886-31.884702h170.030901a31.876885 31.876885 0 1 1 0 63.761587H758.338443a31.876885 31.876885 0 0 1-31.876886-31.876885z"  /><path fill="#ffffff" d="M843.353893 88.806595a31.884702 31.884702 0 0 1 31.884702 31.884703v170.0309a31.876885 31.876885 0 1 1-63.761587 0V120.691298a31.876885 31.876885 0 0 1 31.876885-31.884703z"  /><path fill="#ffffff" d="M588.307542 149.488366c0-7.371237-7.332153-12.50687-14.257832-9.982045L191.480183 278.621802a10.63084 10.63084 0 0 0-6.99603 9.982045v597.210871h403.815572V149.488366z m63.761588 736.326352h31.876885a31.884702 31.884702 0 0 1 0 63.761587H88.845679a31.876885 31.876885 0 1 1 0-63.761587h31.876886v-597.203054a74.384611 74.384611 0 0 1 48.964397-69.913404L552.256489 79.574962c48.511023-17.642504 99.812641 18.291298 99.812641 69.905588v221.168366l247.260824 190.206046a74.384611 74.384611 0 0 1 29.031573 58.962076v265.989863h31.884702a31.876885 31.876885 0 0 1 0 63.761588h-170.030901a31.876885 31.876885 0 1 1 0-63.761588h74.384611V619.824855c0-3.298687-1.532092-6.409771-4.142901-8.426504L652.061313 451.107176v434.715358z"  /><path fill="#ffffff" d="M269.499603 386.368489a31.876885 31.876885 0 0 1 31.876886-31.876886h170.0309a31.876885 31.876885 0 1 1 0 63.761588H301.376489a31.876885 31.876885 0 0 1-31.876886-31.884702z m0 170.0309a31.876885 31.876885 0 0 1 31.876886-31.884702h170.0309a31.876885 31.876885 0 1 1 0 63.761588H301.376489a31.876885 31.876885 0 0 1-31.876886-31.876886z m0 170.030901a31.876885 31.876885 0 0 1 31.876886-31.884702h170.0309a31.876885 31.876885 0 1 1 0 63.761588H301.376489a31.876885 31.876885 0 0 1-31.876886-31.876886zM694.569038 705.192061a31.876885 31.876885 0 0 1 31.884702-31.876885h42.507726a31.876885 31.876885 0 0 1 0 63.761587h-42.507726a31.876885 31.876885 0 0 1-31.884702-31.884702z"  /></svg>'
-])
+  '<svg class="icon" width="64px" height="64.00px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M726.461557 205.714565a31.876885 31.876885 0 0 1 31.876886-31.884702h170.030901a31.876885 31.876885 0 1 1 0 63.761587H758.338443a31.876885 31.876885 0 0 1-31.876886-31.876885z"  /><path fill="#ffffff" d="M843.353893 88.806595a31.884702 31.884702 0 0 1 31.884702 31.884703v170.0309a31.876885 31.876885 0 1 1-63.761587 0V120.691298a31.876885 31.876885 0 0 1 31.876885-31.884703z"  /><path fill="#ffffff" d="M588.307542 149.488366c0-7.371237-7.332153-12.50687-14.257832-9.982045L191.480183 278.621802a10.63084 10.63084 0 0 0-6.99603 9.982045v597.210871h403.815572V149.488366z m63.761588 736.326352h31.876885a31.884702 31.884702 0 0 1 0 63.761587H88.845679a31.876885 31.876885 0 1 1 0-63.761587h31.876886v-597.203054a74.384611 74.384611 0 0 1 48.964397-69.913404L552.256489 79.574962c48.511023-17.642504 99.812641 18.291298 99.812641 69.905588v221.168366l247.260824 190.206046a74.384611 74.384611 0 0 1 29.031573 58.962076v265.989863h31.884702a31.876885 31.876885 0 0 1 0 63.761588h-170.030901a31.876885 31.876885 0 1 1 0-63.761588h74.384611V619.824855c0-3.298687-1.532092-6.409771-4.142901-8.426504L652.061313 451.107176v434.715358z"  /><path fill="#ffffff" d="M269.499603 386.368489a31.876885 31.876885 0 0 1 31.876886-31.876886h170.0309a31.876885 31.876885 0 1 1 0 63.761588H301.376489a31.876885 31.876885 0 0 1-31.876886-31.884702z m0 170.0309a31.876885 31.876885 0 0 1 31.876886-31.884702h170.0309a31.876885 31.876885 0 1 1 0 63.761588H301.376489a31.876885 31.876885 0 0 1-31.876886-31.876886z m0 170.030901a31.876885 31.876885 0 0 1 31.876886-31.884702h170.0309a31.876885 31.876885 0 1 1 0 63.761588H301.376489a31.876885 31.876885 0 0 1-31.876886-31.876886zM694.569038 705.192061a31.876885 31.876885 0 0 1 31.884702-31.876885h42.507726a31.876885 31.876885 0 0 1 0 63.761587h-42.507726a31.876885 31.876885 0 0 1-31.884702-31.884702z"  /></svg>',
+]);
 
-iconList.value = iconList.value.map(item => ({
+iconList.value = iconList.value.map((item) => ({
   id: Math.floor(Math.random() * 1000000),
-  svgObj: item
-}))
-const curIcon = ref('')
-const curIconId = ref('')
+  svgObj: item,
+}));
+const curIcon = ref("");
+const curIconId = ref("");
 const selectedIcon = (item) => {
-  curIconId.value = item.id
-  curIcon.value = item.svgObj
-}
-selectedIcon(iconList.value[0])
+  curIconId.value = item.id;
+  curIcon.value = item.svgObj;
+
+  nextTick(() => {
+    const svgPreview = document.querySelector(".preview svg");
+    svgPreview.style.width = "100px";
+    svgPreview.style.height = "100px";
+  });
+};
+selectedIcon(iconList.value[0]);
 
 // 形状选择
-const selectedShape = ref('corner')
-const filletedDegrees = ref(10)
+const selectedShape = ref("corner");
+const filletedDegrees = ref(10);
+const downloadIconDeg = ref(0);
 // 下载格式
-const selectedFileFormat = ref('png')
+const selectedFileFormat = ref("png");
 // 下载大小
-const selectedSize = ref('')
+const selectedSize = ref("");
 
 const selectedRatio = computed(() => {
-  const size = selectedSize.value.split('*')
+  const size = selectedSize.value.split("*");
   return {
     width: size[0],
-    height: size[1]
-  }
-  console.log('selectedSize ----->', selectedSize.value)
-})
+    height: size[1],
+  };
+});
 
-watch(selectBgImg, (val) => {
-  console.log('val ----->', val)
-})
 watch(newColor, (val) => {
-  const svgPaths = document.querySelectorAll('.preview svg path');
-  svgPaths.forEach(path => {
+  const svgPaths = document.querySelectorAll(".preview svg path");
+  svgPaths.forEach((path) => {
     path.style.fill = newColor.value; // 将颜色改为绿色
   });
-})
+});
+
 const download = () => {
-  const previewNode = document.querySelector('#downloadNode');
-  console.log('previewNode ----->', previewNode)
-  const svgIcon = document.querySelectorAll('#downloadNode svg');
-  svgIcon.forEach(icon => {
-    icon.style.width = '200px';
-    icon.style.height = '200px';
+  ElMessage({
+    message: '图标正在生成中...',
+    type: 'success',
   })
-  nextTick(() => {
-    html2canvas(previewNode, {
-      dpi: window.devicePixelRatio * 2,
-      scale: 1,
-      width: selectedRatio.value.width || 200,
-      height: selectedRatio.value.height || 200,
-      backgroundColor: null
-    }).then((canvas) => {
-      canvas.toBlob((blobObj) => {
-        const tempLink = document.createElement('a');
-        tempLink.href = URL.createObjectURL(blobObj);
-        tempLink.download = 'icon.' + selectedFileFormat.value;
-        document.body.appendChild(tempLink);
-        tempLink.click();
-        document.body.removeChild(tempLink);
-        console.log(' blobObj----->', blobObj)
-        
-      })
-    })
-  })
-}
+  setTimeout(() => {
+    const previewNode = document.querySelector("#downloadNode");
+    const svgIcon = document.querySelectorAll("#downloadNode svg");
+
+    if (selectedShape.value === "filleted") {
+      downloadIconDeg.value =
+        (filletedDegrees.value / 200) *
+        (selectedRatio.value.width === selectedRatio.value.height ||
+        selectedRatio.value.width < selectedRatio.value.height
+          ? selectedRatio.value.width
+          : selectedRatio.value.height);
+    }
+
+    svgIcon.forEach((icon) => {
+      if (
+        selectedRatio.value.width === selectedRatio.value.height ||
+        selectedRatio.value.width < selectedRatio.value.height
+      ) {
+        icon.style.width = selectedRatio.value.width / 2 + "px";
+        icon.style.height = selectedRatio.value.width / 2 + "px";
+      } else {
+        icon.style.width = selectedRatio.value.height / 2 + "px";
+        icon.style.height = selectedRatio.value.height / 2 + "px";
+      }
+    });
+    nextTick(() => {
+      html2canvas(previewNode, {
+        dpi: window.devicePixelRatio * 2,
+        scale: 1,
+        width: selectedRatio.value.width || 200,
+        height: selectedRatio.value.height || 200,
+        backgroundColor: null,
+      }).then((canvas) => {
+        canvas.toBlob((blobObj) => {
+          const tempLink = document.createElement("a");
+          tempLink.href = URL.createObjectURL(blobObj);
+          tempLink.download = "icon." + selectedFileFormat.value;
+          document.body.appendChild(tempLink);
+          tempLink.click();
+          document.body.removeChild(tempLink);
+        });
+      });
+    });
+  }, 1000);
+};
+
+onMounted(() => {
+  const svgPaths = document.querySelectorAll(".preview svg path");
+  svgPaths.forEach((path) => {
+    path.style.fill = newColor.value; // 将颜色改为绿色
+  });
+
+  const svgIcon = document.querySelectorAll(".iconContainer svg");
+  svgIcon.forEach((icon) => {
+    icon.style.width = "30px";
+    icon.style.height = "30px";
+  });
+});
 </script>
 
 <template>
   <div class="main">
     <div class="left">
       <h4>预览效果</h4>
-      <div style="width: 200px; height: 200px;">
-        <div class="preview" :style="{backgroundColor: bgColor, backgroundImage: `url(${ bgImgMap[selectBgImg].url })`, borderRadius: selectedShape === 'filleted' ? `${filletedDegrees}%` : '0px' }">
+      <div style="width: 200px; height: 200px">
+        <div
+          class="preview"
+          :style="{
+            backgroundColor: bgColor,
+            backgroundImage: `url(${bgImgMap[selectBgImg].url})`,
+            borderRadius:
+              selectedShape === 'filleted' ? `${filletedDegrees}px` : '0px',
+          }"
+        >
           <div v-html="curIcon"></div>
         </div>
       </div>
-      <div :style="{width: selectedRatio.width + 'px',  height: selectedRatio.height + 'px', opacity: 0}">
-        <div class="preview" id="downloadNode" :style="{backgroundColor: bgColor, backgroundImage: `url(${ bgImgMap[selectBgImg].url })`, borderRadius: selectedShape === 'filleted' ? `${filletedDegrees}%` : '0px' }">
+      <div
+        :style="{
+          width: selectedRatio.width + 'px',
+          height: selectedRatio.height + 'px',
+          opacity: 0,
+        }"
+      >
+        <div
+          class="preview"
+          id="downloadNode"
+          :style="{
+            backgroundColor: bgColor,
+            backgroundImage: `url(${bgImgMap[selectBgImg].url})`,
+            borderRadius:
+              selectedShape === 'filleted' ? `${downloadIconDeg}px` : '0px',
+          }"
+        >
           <div v-html="curIcon"></div>
         </div>
       </div>
@@ -222,18 +271,41 @@ const download = () => {
         <el-row :gutter="20">
           <el-col :span="4">背景图色值</el-col>
           <el-col :span="20">
-            <el-color-picker v-model="bgColor" show-alpha :predefine="predefineColors" />
+            <el-color-picker
+              v-model="bgColor"
+              show-alpha
+              :predefine="predefineColors"
+            />
           </el-col>
           <el-col :span="4">前景图色值</el-col>
           <el-col :span="20">
-            <el-color-picker v-model="newColor" show-alpha :predefine="predefineColors" />
+            <el-color-picker
+              v-model="newColor"
+              show-alpha
+              :predefine="predefineColors"
+            />
           </el-col>
           <el-col :span="4">背景图效果</el-col>
           <el-col :span="20">
             <el-radio-group v-model="selectBgImg">
-              <el-tooltip :content="item.name" placement="bottom" effect="light" v-for="(item, key) in bgImgMap" :key="key">
-                <el-radio :value="key" border >
-                  <div class="bgImgSelect" :style="{width: '20px', height: '20px', backgroundColor: bgColor, backgroundImage: `url(${item.url})`, borderRadius: '2px'}"></div>
+              <el-tooltip
+                :content="item.name"
+                placement="bottom"
+                effect="light"
+                v-for="(item, key) in bgImgMap"
+                :key="key"
+              >
+                <el-radio :value="key" border>
+                  <div
+                    class="bgImgSelect"
+                    :style="{
+                      width: '20px',
+                      height: '20px',
+                      backgroundColor: bgColor,
+                      backgroundImage: `url(${item.url})`,
+                      borderRadius: '2px',
+                    }"
+                  ></div>
                 </el-radio>
               </el-tooltip>
             </el-radio-group>
@@ -246,51 +318,42 @@ const download = () => {
           <el-col :span="4">选择图形</el-col>
           <el-col :span="20">
             <div class="iconList">
-              <div :class="['iconContainer', curIconId === item.id ? 'selected' : '']" v-for="item in iconList" :key="item.id" @click="selectedIcon(item)">
+              <div
+                :class="[
+                  'iconContainer',
+                  curIconId === item.id ? 'selected' : '',
+                ]"
+                v-for="item in iconList"
+                :key="item.id"
+                @click="selectedIcon(item)"
+              >
                 <div v-html="item.svgObj"></div>
               </div>
             </div>
           </el-col>
         </el-row>
       </div>
-      <h4>形状选择</h4> 
+      <h4>形状选择</h4>
       <el-radio-group v-model="selectedShape">
-        <el-radio value="corner" border >
-          方角图标
-        </el-radio>
-        <el-radio value="filleted" border >
-          圆角图标
-        </el-radio>
+        <el-radio value="corner" border> 方角图标 </el-radio>
+        <el-radio value="filleted" border> 圆角图标 </el-radio>
       </el-radio-group>
       <div v-if="selectedShape === 'filleted'">
         <el-slider v-model="filletedDegrees" />
       </div>
       <h4>格式选择</h4>
       <el-radio-group v-model="selectedFileFormat">
-        <el-radio value="jpg" border >
-          JPG格式
-        </el-radio>
-        <el-radio value="png" border >
-          PNG格式
-        </el-radio>
+        <el-radio value="jpg" border> JPG格式 </el-radio>
+        <el-radio value="png" border> PNG格式 </el-radio>
       </el-radio-group>
       <h4>选择下方尺寸，点击下载</h4>
-      <el-radio-group v-model="selectedSize" @change="download">
-        <el-radio value="240*240" border >
-          240*240
-        </el-radio>
-        <el-radio value="240*480" border >
-          240*480
-        </el-radio>
-        <el-radio value="480*240" border >
-          480*240
-        </el-radio>
-        <el-radio value="480*480" border >
-          480*480
-        </el-radio>
+      <el-radio-group v-model="selectedSize" @click="download">
+        <el-radio value="240*240" border> 240*240 </el-radio>
+        <el-radio value="240*480" border> 240*480 </el-radio>
+        <el-radio value="480*240" border> 480*240 </el-radio>
+        <el-radio value="480*480" border> 480*480 </el-radio>
       </el-radio-group>
     </div>
-    <el-button type="primary" @click="download">下载</el-button>
   </div>
 </template>
 
@@ -345,12 +408,12 @@ const download = () => {
         }
       }
       /deep/ .el-radio.is-bordered {
-        padding: 0 6px 0 6px;;
+        padding: 0 6px 0 6px;
       }
       /deep/ .el-col {
         margin-bottom: 10px;
       }
-      /deep/ .el-color-picker__trigger { 
+      /deep/ .el-color-picker__trigger {
         width: 220px;
       }
       .iconList {
@@ -361,12 +424,13 @@ const download = () => {
         align-items: flex-start;
         justify-content: flex-start;
         flex-wrap: wrap;
+        cursor: pointer;
         .iconContainer {
           width: 50px;
           height: 50px;
           margin-right: 1px;
           margin-bottom: 1px;
-          background: url('../assets/images/icon-bg.png');
+          background: url("../assets/images/icon-bg.png");
           box-sizing: border-box;
           div {
             height: 100%;
@@ -374,10 +438,9 @@ const download = () => {
             align-items: center;
             justify-content: center;
           }
-          
         }
         .selected {
-          border: 1px solid #409eff;
+          border: 2px solid #409eff;
         }
       }
     }
